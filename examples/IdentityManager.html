@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+  <title>Accessing secure ArcGIS Server services</title>
+  <link rel="stylesheet" href="//js.arcgis.com/3.14/dijit/themes/claro/claro.css">
+  <link rel="stylesheet" href="//js.arcgis.com/3.14/esri/css/esri.css">
+  <script>
+    window.dojoConfig = {
+      async: true,
+      packages: [{
+        name: 'store',
+        location: location.pathname.substring(0, location.pathname.lastIndexOf('/')) + '/../'
+      }]
+    };
+  </script>
+  <script src="//js.arcgis.com/3.14compact/"></script>
+  <script>
+    require([
+      'esri/IdentityManager',
+      'store/ArcGISServerStore'
+    ],
+    function (
+      IdentityManager, 
+      ArcGISServerStore
+    ){
+
+      // init the store w/ a secure layer
+      // causes identity manager to prompt use for login
+      var secureStore = new ArcGISServerStore({
+        url: 'http://sampleserver6.arcgisonline.com/arcgis/rest/services/SaveTheBay/FeatureServer/0',
+        flatten: true,
+        returnGeometry: false
+      });
+
+      // query all the features
+      secureStore.query().then(function(results) {
+        // show the results
+        document.getElementById('featureCount').innerHTML = results.length;
+        console.log(results);
+
+      });
+
+    });
+  </script>
+</head>
+
+<!-- claro needed for identity manager -->
+<body class="claro">
+  <p>There are <span id="featureCount">?</span> features in the secure service.</p>
+</body>
+</html>
